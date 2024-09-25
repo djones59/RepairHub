@@ -1,0 +1,11 @@
+DROP TABLE IF EXISTS service;
+
+CREATE TABLE IF NOT EXISTS service (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  car_id INTEGER,
+  date TEXT NOT NULL,
+  total_cost REAL NOT NULL,
+  mileage INTEGER NOT NULL,
+  location TEXT NOT NULL,
+  FOREIGN KEY (car_id) REFERENCES car(id)
+);
