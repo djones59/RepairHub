@@ -44,6 +44,7 @@ const CarList = ({cars, fetchCars}) => {
                     color: 'white',
                     width: '100%',
                     overflow: 'hidden',
+                    
                   }}> 
                     <div style ={{marginLeft: '20px'}}>{car.make} {car.model}, {car.year}</div>
                     <button className="custom-delete-button" 
