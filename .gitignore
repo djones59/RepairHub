@@ -1,0 +1,9 @@
+# Ignore node_modules directory
+node_modules/
+
+# Ignore Electron binaries
+electron/
+
+# Ignore cache and log files
+.cache/
+*.log
