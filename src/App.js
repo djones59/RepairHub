@@ -1,27 +1,23 @@
 // src/App.js
+//components imports
 import HomePage from './components/homePage.js';
-import AddCarForm from './components/AddCarForm.js';
-import CarList from './components/CarList.js';
-import React, {useEffect, useState } from 'react';
+
+import HomeButton from './components/homeButton.js';
+import ViewService from './components/ViewService.js';
+import AddCar from './components/AddCar.js'
+import AddService from './components/AddService.js'
+
+import React, {useState,useEffect } from 'react';
 import './App.css';
 import { HashRouter as Router, Route, Routes } from 'react-router-dom';
-import HomeButton from './components/homeButton.js';
-import AddServiceForm from './components/AddServiceForm.js';
-import CarListCheck from './components/CarListCheck.js'
+
 import Grid from '@mui/material/Grid2/index.js';
 import Snackbar from '@mui/material/Snackbar/index.js'
 import Slide from '@mui/material/Slide/index.js';
+
 function App() {
   //saves data for cars
   const [cars, setCars] = useState([]);
-  //saves data for add service form
-  const [location, setLocation] = useState('')
-  const [date, setDate] = useState('')
-  const [mileage, setMileage] = useState('')
-  // saves data for the list of repairs
-  const [repairs, setRepairs] = useState([]);
-  // for car list checkbox selected car
-  const [selectedCar, setSelectedCar] = useState(null);
   
   // sliding message code here
   const [open, setOpen] = useState(false); // For snackbar open state
@@ -33,7 +29,6 @@ function App() {
     setSnackbarMessage(message);
     setOpen(true);
   };
- 
   // retive cars from sql database
   const fetchCars = async () => {
     try {
@@ -43,43 +38,7 @@ function App() {
       console.error('Error fetching cars:', err);
     }
   };
-  // handles the add service 
-  const handleAddService = async (carId) => {
-      if (!location || !date || !mileage || repairs.length === 0) {
-        alert("Please fill in all fields and add at least one repair.");
-        return;
-      }
-      // Get total cost of repairs
-      const totalCost = repairs.reduce((accumulator, repair) => {
-        return accumulator + parseFloat(repair.cost);
-      }, 0);
-      const serviceData = {
-        carId,
-        location,
-        date,
-        mileage,
-        repairs: repairs,
-        totalCost,
-      };
-
-      console.log("Service Data:", serviceData);
-
-      try {
-        await window.electronAPI.addService(serviceData);
-        setLocation('');
-        setDate('');
-        setMileage('');
-        setRepairs([]);
-        setSelectedCar(null)
-        setSnackbarMessage(`Service at ${location} on ${date} added successfully!`);
-        setOpen(true); 
-
-      } catch (error) {
-        console.error("Error adding service to database:", error);
-        setSnackbarMessage('Failed to add service.');
-        setOpen(true); 
-      }
-  };
+  //
   useEffect(() => {
     fetchCars();  // Fetch cars when the app loads
   }, []);
@@ -99,45 +58,21 @@ function App() {
           </button>
         </div>
         <Routes>
-          <Route  path="/" element={<HomePage />} />
+          <Route path="/" element={<HomePage />} />
           <Route path="/add-car"
             element={
-              <Grid key="main" container direction="row" spacing={3} style={{paddingTop: '50px' , paddingRight: '50px' }}>
-                <Grid item xs={12} md={7} style = {{marginLeft: '200px' , WebkitAppRegion: 'no-drag'}}  >
-                  <AddCarForm fetchCars={fetchCars} handleSnackbarOpen = {handleSnackbarOpen} />
-                </Grid>
-                <Grid item xs={12} md={5} style={{ WebkitAppRegion: 'no-drag', paddingTop: '50px' ,borderRadius: '8px',width: '100%', maxWidth: '400px',height: 'auto', minHeight: '600px', marginLeft: '70px', }}>
-                  <CarList cars={cars} fetchCars={fetchCars} />
-                </Grid>
-               </Grid>}/>
+              <AddCar handleSnackbarOpen = {handleSnackbarOpen} cars = {cars} setCars = {setCars} fetchCars = {fetchCars}/>
+            }/>
           <Route path="*" element={<h1>Page Not Found</h1>} /> 
           <Route path= "/add-service" 
             element = {
-              <Grid key="main" container direction="row" spacing={3} style={{ marginLeft: '50px', paddingTop: '50px' , paddingRight: '50px'}}>
-                {/* Service Form Section */}
-                <Grid item xs={12} md={7} style = {{ WebkitAppRegion: 'no-drag', maxWidth: '700px'}}  >
-                  <div className="service-form">
-                    <AddServiceForm 
-                      location={location}
-                      setLocation={setLocation}
-                      date={date}
-                      setDate={setDate}
-                      mileage={mileage}
-                      setMileage={setMileage}
-                      repairs={repairs}
-                      setRepairs={setRepairs}
-                    />
-                  </div>
-                </Grid>
-                {/* Car List Section */}
-                <Grid item xs={12} md={5} style={{ WebkitAppRegion: 'no-drag', borderRadius: '8px',width: '100%', maxWidth: '400px',height: 'auto', minHeight: '600px', marginLeft: '50px', }} >
-                  <div className="list-section" >
-                    <CarListCheck cars={cars} selectedCar = {selectedCar} setSelectedCar = {setSelectedCar} handleAddService={handleAddService} handleSnackbarOpen = {handleSnackbarOpen}/>
-                  </div>
-                </Grid>
-              </Grid>
-               
+              <AddService cars = {cars} handleSnackbarOpen = {handleSnackbarOpen} />
             }/>
+          <Route path= "/view-repairs" 
+            element = {
+              <ViewService cars = {cars} />
+            }>
+          </Route>
         </Routes>
         <Snackbar
             open={open}

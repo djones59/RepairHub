@@ -11,7 +11,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
   getAllCars: () => ipcRenderer.invoke('get-all-cars'),  
   insertCar: (carData) => ipcRenderer.invoke('insert-car', carData),  
   getAllServices: () => ipcRenderer.invoke('get-all-services'),
-  getAllRepairs: () => ipcRenderer.invoke('get-all-repairs'),
+  getAllRepairs: (serviceId) => ipcRenderer.invoke('get-all-repairs',serviceId),
   deleteCar: (carID) => ipcRenderer.invoke('delete-car', carID),
   addService: (serviceData) => ipcRenderer.invoke('add-service', serviceData)
 });

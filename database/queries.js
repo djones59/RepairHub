@@ -46,9 +46,9 @@ export function getAllServices(db,callback) {
 }
 
 // SQL query to select all repairs
-export function getAllRepairs(db,callback) {
+export function getAllRepairs(db,serviceid,callback) {
     
-    const sql = `SELECT * FROM repair`;
+    const sql = `SELECT * FROM repair WHERE servrepair_id = ${serviceid};`;
     // Execute the query
     db.all(sql, [], (err, rows) => {
         if (err) {

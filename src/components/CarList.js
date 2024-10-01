@@ -1,5 +1,5 @@
 import React ,{ useState }from 'react';
-import { motion } from 'framer-motion';
+import { motion ,AnimatePresence} from 'framer-motion';
 import Grid from '@mui/material/Grid2/index.js';
 import ConfirmDialog from './ConfirmDialog.js';
 
@@ -33,7 +33,13 @@ const CarList = ({cars, fetchCars}) => {
                 <li style = {{color: 'white'}}>No cars found</li>
               ) : (
                 cars.map((car, index) => (
-                  <li key={index} 
+                  <AnimatePresence>
+                  <motion.li 
+                   initial={{ opacity: 0}}
+                   animate={{ opacity: 1 }}
+                   exit={{ opacity: 0, y: -20 }}
+                   transition={{ duration: 0.3 }}
+                  key={index} 
                   style={{ 
                     display: 'flex',
                     alignItems: 'center',
@@ -80,7 +86,8 @@ const CarList = ({cars, fetchCars}) => {
                         onConfirm={() => handleDelete(car.id)}
                         onCancel={handleCloseDialog}
                       />
-                  </li>
+                  </motion.li>
+                  </AnimatePresence>
                 ))
               )}
             </ul>

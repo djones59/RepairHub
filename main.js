@@ -96,8 +96,20 @@ ipcMain.handle('get-all-services', async (event) =>{
   });
 });
 
+// ipc handler form getAllRepairs
+ipcMain.handle('get-all-repairs', async (event,serviceID) =>{
+  return new Promise((resolve,reject)=>{
+    getAllRepairs(db,serviceID ,(err,rows) => {
+      if(err){
+        reject(err);
+      }else{
+        resolve(rows);
+      }
+    });
+  });
+});
+
 ipcMain.handle('delete-car', async (event,carID) => {
-  console.log(`Deleting car with ID: ${carID}`); 
   return new Promise((resolve, reject) => {
     deleteCar(db,carID, (err) =>{
       if (err){
@@ -121,7 +133,9 @@ ipcMain.handle('add-service', async (event,serviceData) => {
   });
 });
 
-// ipc handler for getAllRepairs
+
+
+
 //END IPC HANDELERS ------
 
 

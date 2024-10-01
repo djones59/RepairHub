@@ -7,6 +7,7 @@ import Grid from '@mui/material/Grid2/index.js';
 import TextField from '@mui/material/TextField/index.js';
 import Button from '@mui/material/Button/index.js';
 import DateInputField from './DateInputField.js';
+import GlowingTextField from './GlowingTextField.js'
 
 const AddCarForm = ({ fetchCars , handleSnackbarOpen}) => {
     const [carMake, setCarMake] = useState('');
@@ -62,26 +63,17 @@ const AddCarForm = ({ fetchCars , handleSnackbarOpen}) => {
               <Grid item xs={12}>
                 <FormLabel htmlFor="car-make" required sx = {{color: 'white'}}> Make </FormLabel>
                 <TextField
-                  id="car-make"
-                  name="car-make"
                   value={carMake}
                   onChange={(e) => setCarMake(e.target.value)}
                   fullWidth
                   required
                   sx={{
                     color: 'white',
-                    '& input': {
-                      textAlign: 'center', // Center the input text
-                      fontSize: '20px',
-                    },
-                    '&:hover .MuiOutlinedInput-notchedOutline': {
-                      borderColor: 'blue',  // Change border color on hover
-                      borderWidth: '3px',
-                    },
-                    '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                      borderColor: 'green', // Change border color when focused
-                      borderWidth: '3px',
-                    },
+                    '& .MuiOutlinedInput-root': {
+                        '& fieldset': {
+                            border: 'none', // Remove the border
+                        },
+                      },
                   }}
                   slotProps={{
                     input: {

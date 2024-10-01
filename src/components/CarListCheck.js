@@ -56,7 +56,7 @@ const CarListCheck = ({cars, selectedCar, setSelectedCar, handleAddService, hand
         </Grid>
         <Button onClick={() => {
             if (selectedCar) {
-              handleAddService(selectedCar.id); // Call handleAddService with the selected car ID
+              handleAddService(selectedCar); // Call handleAddService with the selected car ID
             }else{
               handleSnackbarOpen('Pease select a car.')
             }

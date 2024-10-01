@@ -16,7 +16,7 @@ function HomePage() {
         <p>Track and manage all your car repairs in one place!</p>
         <div className = "button-group" style={{ WebkitAppRegion: 'no-drag'}}>
           <button onClick={() => navigate('/add-car')}> Add Car </button>
-          <button onClick={() => alert('View Your Repairs')}>View Repairs</button>
+          <button onClick={() => navigate('/view-repairs')}>View Repairs</button>
           <button onClick={() => navigate('/add-service')}>Add Service</button>
         </div>
       </div>
