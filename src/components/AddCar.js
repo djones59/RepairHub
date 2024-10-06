@@ -7,7 +7,7 @@ import CarList from './CarList.js';
 const AddCar = ({ cars,fetchCars, handleSnackbarOpen}) => {
     
     return (
-        <Grid key="main" container direction="row" spacing={3} style={{paddingTop: '50px' , paddingRight: '50px' }}>
+        <Grid key="main" container direction="row" spacing={3} style={{ paddingRight: '50px', minHeight: '80px', maxHeight: '800px' }}>
             <Grid item xs={12} md={7} style = {{marginLeft: '200px' , WebkitAppRegion: 'no-drag'}}  >
                 <AddCarForm fetchCars={fetchCars} handleSnackbarOpen = {handleSnackbarOpen} />
             </Grid>

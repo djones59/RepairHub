@@ -1,19 +1,44 @@
 import React ,{useState, useEffect} from 'react';
 import Grid from '@mui/material/Grid2/index.js';
-import TextField from '@mui/material/TextField/index.js';
-import Button from '@mui/material/Button/index.js';
 import InputAdornment from '@mui/material/InputAdornment/index.js';
-import Select from '@mui/material/Select/index.js';
-import MenuItem from '@mui/material/MenuItem/index.js';
 import { motion , AnimatePresence} from 'framer-motion';
 import DateInputField from './DateInputField.js';
+import ConfirmDialog from './ConfirmDialog.js';
+import GlowingTextField from './GlowingTextField.js'
+import GlowingSelect from './GlowingSelect.js';
 
-const RepairSearch = ({searchResults}) => {
+
+const RepairSearch = ({searchResults, handleDelete}) => {
     const [searchQuery, setSearchQuery] = useState('');
     const [priceRange, setPriceRange] = useState({ min: '', max: '' });
     const [selectedOption, setSelectedOption] = useState('search-all');
     const [date, setDate] = useState(''); 
     const [filteredResults, setFilteredResults] = useState([]);
+
+    //for delete button hovering
+    const [hoveredIndex, setHoveredIndex] = useState(null);
+    const [open, setOpen] = useState(false);
+    //for the dialog box when delete car button is pressed
+    const handleOpenDialog = () => {
+      setOpen(true);
+    };
+    const handleCloseDialog = () => {
+      setOpen(false);
+    };
+
+    const handleKeyDown = (e) => {
+        // Allow numbers, backspace, and delete
+        if (
+          (e.key >= '0' && e.key <= '9') || // Allow number keys
+          e.key === 'Backspace' || // Allow backspace
+          e.key === 'Delete' || // Allow delete
+          e.key === 'ArrowLeft' || // Allow arrow left
+          e.key === 'ArrowRight' // Allow arrow right
+        ) {
+          return;
+        }
+        e.preventDefault(); // Prevent all other key inputs
+      };
     useEffect(() => {
         const lowercasedQuery = searchQuery.toLowerCase();
 
@@ -161,45 +186,49 @@ const RepairSearch = ({searchResults}) => {
         setSearchResults(dummyServices)    */ 
 
     return(
-      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
       <Grid container direction="column" spacing={2}>
-        <h1 style={{ color: 'white' }}>Search Repairs</h1>
+        <h1 style={{ color: 'white',fontFamily: '"Fjalla One", sans-serif' }}>Search Repairs</h1>
         <Grid container direction="row">
           <Grid item style={{ maxWidth: '150px' }}>
             {/* Dropdown Menu */}
-            <Select
-              style={{ backgroundColor: '#333', color: 'white' }}
+            <GlowingSelect
+              sx = {{ '& .MuiOutlinedInput-root': {
+                '& fieldset': {
+                  border: 'none'
+                },
+              },}}
               value={selectedOption}
               onChange={(e) => setSelectedOption(e.target.value)}
-              displayEmpty
-              fullWidth
-            >
-              <MenuItem value="search-all">Search All</MenuItem>
-              <MenuItem value="Description">Description</MenuItem>
-              <MenuItem value="Price">Price</MenuItem>
-              <MenuItem value="Location">Location</MenuItem>
-              <MenuItem value="Date">Date</MenuItem>
-              {/* Add more options here as needed */}
-            </Select>
+              >
+            </GlowingSelect>
           </Grid>
           {selectedOption === 'Price' ? (
             <>
             <Grid item>
-                <TextField
+                <GlowingTextField
                     variant="outlined"
                     value={priceRange.min}
+                    onKeyDown={handleKeyDown}
                     onChange={(e) => setPriceRange({ ...priceRange, min: e.target.value })} // Update min price
-                  
-                    slotProps={{
-                        input: {
-                            startAdornment: <InputAdornment  position="start" style={{ color: 'white' }}>$</InputAdornment>,
-                            inputMode: 'numeric',
-                            pattern: '[0-9]*',
-                            style: {  color: '#e7d7d7', backgroundColor: '#333', borderRadius: '5px' },
+                    InputProps={{
+                        startAdornment: (
+                          <InputAdornment position="start">
+                            <span style={{ color: 'white' }}>$</span>
+                          </InputAdornment>
+                        ),
+                      }}
+                    sx = {{
+                        fontFamily: '"Fjalla One", sans-serif',
+                        maxWidth: '100px',
+                        backgroundColor: '#333',
+                        borderRadius: '8px',
+                        '& .MuiOutlinedInput-root': {
+                            '& fieldset': {
+                              border: 'none', 
+                              borderRadius: '8px',
+                            },
                         },
-                        inputLabel: {
-                            style: { color: 'white' },
-                        },
+                        input: {color: '#e7d7d7'}, 
                     }}
                 />
             </Grid>
@@ -207,21 +236,30 @@ const RepairSearch = ({searchResults}) => {
                 <span style={{ color: 'white' ,fontSize: '20px'}}>to</span>
             </Grid>
             <Grid item>
-                <TextField
+                <GlowingTextField
                     variant="outlined"
                     value={priceRange.max}
+                    onKeyDown={handleKeyDown}
                     onChange={(e) => setPriceRange({ ...priceRange, max: e.target.value })} // Update max price
-                  
-                    slotProps={{
-                        input: {
-                            startAdornment: <InputAdornment style={{ color: 'white' }} position="start">$</InputAdornment>,
-                            inputMode: 'numeric',
-                            pattern: '[0-9]*',
-                            style: {  color: '#e7d7d7', backgroundColor: '#333', borderRadius: '5px' },
+                    InputProps={{
+                        startAdornment: (
+                          <InputAdornment position="start">
+                            <span style={{ color: 'white' }}>$</span>
+                          </InputAdornment>
+                        ),
+                      }}
+                    sx = {{
+                        fontFamily: '"Fjalla One", sans-serif',
+                        maxWidth: '100px',
+                        backgroundColor: '#333',
+                        borderRadius: '8px',
+                        '& .MuiOutlinedInput-root': {
+                            '& fieldset': {
+                              border: 'none', 
+                              borderRadius: '8px',
+                            },
                         },
-                        inputLabel: {
-                            style: { color: 'white' },
-                        },
+                        input: {color: '#e7d7d7'}, 
                     }}
                 />
             </Grid>
@@ -232,26 +270,52 @@ const RepairSearch = ({searchResults}) => {
                     <DateInputField
                         date={date}
                         setDate={setDate}
-                        label="Enter Date"
-                        textFieldProps={{ style: { backgroundColor: '#333', color: 'white' } }}
-                        sx={{ borderRadius: '5px' }}
+                        sx={{
+                            color: 'white',
+                            maxWidth: '100px',
+                            minWidth: '100px',
+                            '& input': {
+                              backgroundColor: '#333' ,
+                              color: '#e7d7d7',
+                              fontFamily: '"Fjalla One", sans-serif',
+                              borderRadius: '8px',
+                              fontSize: '16px',
+                              
+                            },
+                            '& .MuiOutlinedInput-root': {
+                                '& fieldset': {
+                                  border: 'none', 
+                                  borderRadius: '8px',
+                                },
+                              },
+                          }}
                     />
                 </Grid>
             ) : (
                 <Grid item style={{ minWidth: '400px' }}>
                     {/* Single Search Box for non-Price and non-Date options */}
-                    <TextField
-                        label="Search"
+                    <GlowingTextField
+                        placeholder ="Search"
                         variant="outlined"
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)} // Update searchQuery dynamically
                         fullWidth
-                        style={{
-                            backgroundColor: '#333',
-                            color: '#e7d7d7',
-                            borderRadius: '5px',
-                        }}
-                        InputLabelProps={{ style: { color: 'white' } }}
+                        sx={{
+                            color: 'white',
+                            '& input': {
+                              backgroundColor: '#333' ,
+                              color: '#e7d7d7',
+                              fontFamily: '"Fjalla One", sans-serif',
+                              borderRadius: '8px',
+                              fontSize: '16px'
+                            },
+                            '& .MuiOutlinedInput-root': {
+                                '& fieldset': {
+                                  border: 'none', 
+                                  borderRadius: '8px',
+                                },
+                              },
+                          }}
                     />
                 </Grid>
             )}
@@ -261,7 +325,7 @@ const RepairSearch = ({searchResults}) => {
           {/* Unordered List for Search Results */}
           <AnimatePresence>
             <motion.ul
-              style={{ listStyle: 'none', padding: '0', margin: '0', overflowY: 'auto' }}
+              style={{ listStyle: 'none', padding: '0', margin: '0', overflowY: 'auto',maxHeight: '480px',scrollbarWidth: 'thin',scrollbarColor: '#888 #333' }}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.5 }}
@@ -274,22 +338,66 @@ const RepairSearch = ({searchResults}) => {
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0, y: -20 }}
                     transition={{ duration: 0.3 }}
-                    style={{ margin: index === 0 ? '0 0 5px 0' : '5px 0', backgroundColor: '#888', padding: '10px', borderRadius: '8px' ,overflow: 'hidden',}}
+                    style={{ margin: index === 0 ? '0 0 5px 0' : '5px 0', backgroundColor: '#555', padding: '10px', borderRadius: '8px' ,overflow: 'hidden', display: 'flex', justifyContent: 'space-between',alignItems: 'flex-start',}}
                   >
                     {/* Service Details */}
-                    <strong>Service {service.id}: {service.date} at {service.location}</strong>
-                    <p>Total Cost: ${service.total_cost} | Mileage: {service.mileage}</p>
-
-                    {/* Inner Loop: Loop through the array of repairs associated with this service */}
-                    <ul>
-                      {service.repairs.length > 0 ? (
-                        service.repairs.map((repair, idx) => (
-                          <li key={idx}>- {repair.description}: ${repair.cost}</li>
-                        ))
-                      ) : (
-                        <li>No repairs found for this service</li>
-                      )}
-                    </ul>
+                    <div style={{ flexGrow: 1 }}>  {/* This div wraps the service details and repairs */}
+                        <strong style={{ fontFamily: '"Fjalla One", sans-serif', color: ' #f0f0f0' }}>
+                        {service.model}, {service.year}: {service.date} at {service.location}
+                        </strong>
+                        <p style={{ fontFamily: '"Fjalla One", sans-serif', color: ' #f0f0f0' ,marginBottom: '5px',marginTop: '5px' }}>
+                            Total Cost: ${service.total_cost} | Mileage: {service.mileage}
+                        </p>
+                        <ul style={{ fontFamily: '"Fjalla One", sans-serif', color: ' #f0f0f0', }}>
+                            {service.repairs.length > 0 ? (
+                                service.repairs.map((repair, idx) => (
+                                <li key={idx}>- {repair.description}: ${repair.cost}</li>
+                                ))
+                            ) : (
+                                <li style={{ color: '#f0f0f0', fontFamily: '"Fjalla One", sans-serif' }}>
+                                No repairs found for this service
+                                </li>
+                            )}
+                        </ul>
+                    </div>
+                    {/* button for deleting service */}
+                    <button className="custom-delete-button" 
+                      tabIndex={open ? -1 : 0}
+                      onClick={() => handleOpenDialog()} 
+                      onMouseEnter={() => setHoveredIndex(index)}
+                      onMouseLeave={() => setHoveredIndex(null)}
+                      style={{ 
+                        color: hoveredIndex === index ? '#B22222' : 'white',
+                        transition: 'color 0.4s ease',
+                        backgroundColor: 'transparent', 
+                        border: 'none', 
+                        cursor: 'pointer',
+                        padding: '10px',
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        marginLeft: 'auto', 
+                        
+                      }}>
+                      <span className="material-symbols-outlined" 
+                        style={{
+                          fontSize: '30px',
+                          padding: '5px',
+                          border: 'none'
+                        }}> delete
+                      </span>
+                      
+                    </button>
+                    <ConfirmDialog
+                        open={open}
+                        title="Delete Service"
+                        message="Are you sure you want to delete this service? This will delete every repair associated with this service."
+                        onConfirm={async () => {
+                            await handleDelete(service.id);
+                            handleCloseDialog();
+                        }}
+                        onCancel={handleCloseDialog}
+                      />
                   </motion.li>
                 ))
               ) : (
@@ -308,7 +416,6 @@ const RepairSearch = ({searchResults}) => {
           </AnimatePresence>
         </Grid>
       </Grid>
-    </motion.div>
   );
 };
 

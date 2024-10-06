@@ -4,7 +4,7 @@ import Grid from '@mui/material/Grid2/index.js';
 import AddServiceForm from './AddServiceForm.js';
 import CarListCheck from './CarListCheck.js'
 
-const AddService = ({cars ,handleSnackbarOpen}) => {
+const AddService = ({cars ,fetchCars, handleSnackbarOpen, setSnackbarMessage, setOpen}) => {
     //saves data for add service form
     const [location, setLocation] = useState('')
     const [date, setDate] = useState('')
@@ -33,7 +33,16 @@ const AddService = ({cars ,handleSnackbarOpen}) => {
             totalCost,
         };
 
-        console.log("Service Data:", serviceData);
+        
+        // updating mileage in database
+        try {
+            await window.electronAPI.updateMileage(carId,mileage);
+            console.log('update mileage')
+            fetchCars()
+
+        } catch (error){
+            console.error("Error updating mileage:", error);
+        }
 
         try {
             await window.electronAPI.addService(serviceData);
@@ -53,9 +62,9 @@ const AddService = ({cars ,handleSnackbarOpen}) => {
     };
 
     return (
-        <Grid key="main" container direction="row" spacing={3} style={{ marginLeft: '50px', paddingTop: '50px' , paddingRight: '50px'}}>
+        <Grid key="main" container direction="row" spacing={3} style={{ marginLeft: '50px', paddingTop: '50px' , paddingRight: '50px' ,}}>
             {/* Service Form Section */}
-            <Grid item xs={12} md={7} style = {{ WebkitAppRegion: 'no-drag', maxWidth: '700px'}}  >
+            <Grid item xs={12} md={7} style = {{ WebkitAppRegion: 'no-drag', maxWidth: '700px' ,minHeight: '500px'}}  >
                 <div className="service-form">
                 <AddServiceForm 
                     location={location}
@@ -72,7 +81,7 @@ const AddService = ({cars ,handleSnackbarOpen}) => {
             {/* Car List Section */}
             <Grid item xs={12} md={5} style={{ WebkitAppRegion: 'no-drag', borderRadius: '8px',width: '100%', maxWidth: '400px',height: 'auto', minHeight: '600px', marginLeft: '50px', }} >
                 <div className="list-section" >
-                <CarListCheck cars={cars} selectedCar = {selectedCar} setSelectedCar = {setSelectedCar} handleAddService={handleAddService} handleSnackbarOpen = {handleSnackbarOpen}/>
+                <CarListCheck cars={cars} selectedCar = {selectedCar} fetchCars = {fetchCars}setSelectedCar = {setSelectedCar} handleAddService={handleAddService} handleSnackbarOpen = {handleSnackbarOpen}/>
                 </div>
             </Grid>
         </Grid>

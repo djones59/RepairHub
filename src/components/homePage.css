@@ -6,13 +6,13 @@
   bottom: 0;
   min-width: 100%;
   min-height: 100%;
+  object-fit: cover; 
   z-index: -1; /* Ensures video stays behind the content */
 }
 .home-page {
   text-align: center;
   padding: 50px;
   font-family: "Fjalla One", sans-serif;
-
 }
 
 .home-page h1 {

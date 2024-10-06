@@ -4,11 +4,9 @@ import './AddCarForm.css';
 import React, { useState } from 'react';
 import FormLabel from '@mui/material/FormLabel/index.js';
 import Grid from '@mui/material/Grid2/index.js';
-import TextField from '@mui/material/TextField/index.js';
-import Button from '@mui/material/Button/index.js';
 import DateInputField from './DateInputField.js';
 import GlowingTextField from './GlowingTextField.js'
-
+import SmoothGlassButton from './SmoothGlassButton.js';
 const AddCarForm = ({ fetchCars , handleSnackbarOpen}) => {
     const [carMake, setCarMake] = useState('');
     const [carModel, setCarModel] = useState('');
@@ -16,6 +14,13 @@ const AddCarForm = ({ fetchCars , handleSnackbarOpen}) => {
     const [carMile, setCarMile] = useState('');
     const [carYear, setCarYear] = useState('');
 
+    const restrictToFourDigits = (inputValue) => {
+      // Remove all non-numeric characters
+      inputValue = inputValue.replace(/\D/g, '');
+      
+      // Limit the input to 4 digits
+      return inputValue.slice(0, 4);
+    };
     const handleSubmit = (e) => {
         e.preventDefault();
         //If all fields are not filled out, send alert
@@ -42,51 +47,52 @@ const AddCarForm = ({ fetchCars , handleSnackbarOpen}) => {
             setCarMile('');
             setCarYear('');
 
-            handleSnackbarOpen(`${carModel}- ${carYear} added successfully!`)
+            handleSnackbarOpen(`${carModel} - ${carYear} added successfully!`)
         })
         .catch((err) => {
             console.error('Error inserting car data:', err);
         });
     };
   return (
-    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+    <div >
       <video autoPlay loop muted id="background-blurred-video">
         <source src={videoBackground} type="video/mp4" />
         Your browser does not support the video tag.
       </video>
-
-      <Grid container direction="column" alignItems="flex-start" style={{ paddingTop: '50px' , paddingLeft: '10%' }}>
+      <Grid container direction="column" alignItems="flex-start" style={{paddingTop: '50px' , paddingLeft: '10%' }}>
         <Grid item xs={6} style={{ textAlign: 'center'  }}>
-          <h1 style={{  fontSize: '24px', color: 'white'}}>Enter Car Details</h1>
+          <h1 style={{  fontSize: '24px', color: 'white', fontFamily: '"Fjalla One", sans-serif'}}>Enter Car Details</h1>
           <form onSubmit={handleSubmit}>
             <Grid  container spacing={3} direction="column" >
               <Grid item xs={12}>
-                <FormLabel htmlFor="car-make" required sx = {{color: 'white'}}> Make </FormLabel>
-                <TextField
+                <FormLabel htmlFor="car-make" required sx = {{color: 'white', fontFamily: '"Fjalla One", sans-serif'}}> Make </FormLabel>
+                <GlowingTextField
                   value={carMake}
                   onChange={(e) => setCarMake(e.target.value)}
                   fullWidth
                   required
                   sx={{
                     color: 'white',
+                    '& input': {
+                      textAlign: 'center', 
+                      backgroundColor: '#333' ,
+                      color: '#e7d7d7',
+                      fontFamily: '"Fjalla One", sans-serif',
+                      borderRadius: '8px',
+                      fontSize: '20px'
+                    },
                     '& .MuiOutlinedInput-root': {
                         '& fieldset': {
-                            border: 'none', // Remove the border
+                          border: 'none', 
+                          borderRadius: '8px',
                         },
                       },
                   }}
-                  slotProps={{
-                    input: {
-                      style: { color: '#e7d7d7', backgroundColor: '#333' },
-                    },
-                    inputLabel: {
-                      style: { color: 'white' },
-                    },
-                  }}/>
+                  />
               </Grid>
               <Grid item xs={12}>
-                <FormLabel htmlFor="car-model" required sx = {{color: 'white'}}> Model </FormLabel>
-                <TextField
+                <FormLabel htmlFor="car-model" required sx = {{color: 'white', fontFamily: '"Fjalla One", sans-serif'}}> Model </FormLabel>
+                <GlowingTextField
                   id="car-model"
                   name="car-model"
                   value={carModel}
@@ -96,97 +102,118 @@ const AddCarForm = ({ fetchCars , handleSnackbarOpen}) => {
                   sx={{
                     color: 'white',
                     '& input': {
-                      textAlign: 'center', // Center the input text
+                      textAlign: 'center', 
+                      backgroundColor: '#333' ,
+                      color: '#e7d7d7',
+                      fontFamily: '"Fjalla One", sans-serif',
+                      borderRadius: '8px',
                       fontSize: '20px'
                     },
-                  }}
-                  slotProps={{
-                    input: {
-                      style: { color: '#e7d7d7', backgroundColor: '#333'},
-                    },
-                    inputLabel: {
-                      style: { color: 'white' },
-                    },
+                    '& .MuiOutlinedInput-root': {
+                        '& fieldset': {
+                          border: 'none', 
+                          borderRadius: '8px',
+                        },
+                      },
                   }}/>
               </Grid>
               <Grid item xs={12}>
-                <FormLabel htmlFor="car-year" required sx = {{color: 'white'}}> Year </FormLabel>
-                <TextField
+                <FormLabel htmlFor="car-year" required sx = {{color: 'white', fontFamily: '"Fjalla One", sans-serif'}}> Year </FormLabel>
+                <GlowingTextField
                   id="car-year"
                   name="car-yar"
                   value={carYear}
-                  onChange={(e) => setCarYear(e.target.value)}
+                  onChange={(e) => {
+                    const restrictedYear = restrictToFourDigits(e.target.value);
+                    setCarYear(restrictedYear); // Set the restricted year in the state
+                  }}
                   fullWidth
                   required
                   sx={{
+                    color: 'white',
                     '& input': {
-                      textAlign: 'center', // Center the input text
+                      textAlign: 'center', 
+                      backgroundColor: '#333' ,
+                      color: '#e7d7d7',
+                      fontFamily: '"Fjalla One", sans-serif',
+                      borderRadius: '8px',
                       fontSize: '20px'
                     },
-                  }}
-                  slotProps={{
-                    input: {
-                      style: { color: '#e7d7d7', backgroundColor: '#333' },
-                    },
-                    inputLabel: {
-                      style: { color: 'white' },
-                    },
+                    '& .MuiOutlinedInput-root': {
+                        '& fieldset': {
+                          border: 'none', 
+                          borderRadius: '8px',
+                        },
+                      },
                   }}/>
               </Grid>
               <Grid item xs={12}>
-                <FormLabel htmlFor="car-mile" required sx = {{color: 'white'}}> Mileage </FormLabel>
-                <TextField
+                <FormLabel htmlFor="car-mile" required sx = {{color: 'white', fontFamily: '"Fjalla One", sans-serif'}}> Mileage </FormLabel>
+                <GlowingTextField
                   id="car-mile"
                   name="car-mile"
                   value={carMile}
-                  onChange={(e) => setCarMile(e.target.value)}
+                  onChange={(e) => {
+                    // format to add commas while typing and restricting input
+                    let inputValue = e.target.value;
+                    inputValue = inputValue.replace(/[^0-9]/g, '');
+                    const formattedValue = inputValue.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+                    setCarMile(formattedValue); 
+                  }}
                   fullWidth
                   required
                   sx={{
+                    color: 'white',
                     '& input': {
-                    textAlign: 'center', 
-                    fontSize: '20px'
-                  },
-                  }}
-                  slotProps={{
-                    input: {
-                      style: { color: '#e7d7d7', backgroundColor: '#333'},
+                      textAlign: 'center', 
+                      backgroundColor: '#333' ,
+                      color: '#e7d7d7',
+                      fontFamily: '"Fjalla One", sans-serif',
+                      borderRadius: '8px',
+                      fontSize: '20px'
                     },
-                    inputLabel: {
-                      style: { color: 'white' },
-                    },
+                    '& .MuiOutlinedInput-root': {
+                        '& fieldset': {
+                          border: 'none', 
+                          borderRadius: '8px',
+                        },
+                      },
                   }}/>
               </Grid>
               <Grid item xs={12}>
-                <FormLabel htmlFor="car-date" required sx = {{color: 'white'}}> Date Puchased </FormLabel>
+                <FormLabel htmlFor="car-date" required sx = {{color: 'white', fontFamily: '"Fjalla One", sans-serif'}}> Date Puchased </FormLabel>
                 <DateInputField 
                   date={carDate} 
                   setDate={setCarDate} 
                   sx={{
-                    textAlign: 'center', 
+                    color: 'white',
                     '& input': {
                       textAlign: 'center', 
+                      backgroundColor: '#333' ,
+                      color: '#e7d7d7',
+                      fontFamily: '"Fjalla One", sans-serif',
+                      borderRadius: '8px',
                       fontSize: '20px'
                     },
-                  }}
-                  slotProps={{
-                    input: {
-                      style: {color: 'white' , backgroundColor: '#333' } 
-                    }, // Style for the text inside the input
-                    disableUnderline: true,
+                    '& .MuiOutlinedInput-root': {
+                        '& fieldset': {
+                          border: 'none', 
+                          borderRadius: '8px',
+                        },
+                      },
                   }}
                   />
               </Grid>
             </Grid>
             <Grid container justifyContent="center" alignItems="center" style={{ paddingTop: '30px' }}>
-              <Button style={{ alignSelf: 'flex-end', marginTop: 'auto' }} type="submit" variant="contained" color="primary">
-                Add Car
-              </Button>
+            <SmoothGlassButton onClick={handleSubmit}>
+              Add Car
+            </SmoothGlassButton>
             </Grid>
           </form>
         </Grid>
       </Grid>
-  </motion.div>
+  </div>
 );
 };
 

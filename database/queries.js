@@ -14,8 +14,8 @@ export function insertCar(db,make, model, year, dateIssued, currMileage,callback
         }
     });
 }
-// SQL query to select all cars
 
+// SQL query to select all cars
 export function getAllCars(db,callback) {
     const sql = `SELECT * FROM car`;
     // Execute the query
@@ -32,7 +32,11 @@ export function getAllCars(db,callback) {
 
 // SQL query to select all services 
 export function getAllServices(db,callback) {
-    const sql = `SELECT * FROM service`;
+    const sql = `
+    SELECT service.*, car.model, car.year 
+    FROM service 
+    JOIN car ON service.car_id = car.id
+    `;
     // Execute the query
     db.all(sql, [], (err, rows) => {
         if (err) {
@@ -45,6 +49,20 @@ export function getAllServices(db,callback) {
     });
 }
 
+// SQL query to update car mileage when service as been added
+export function updateCarMileage(db, carID, newMileage, callback) {
+    const sql = `UPDATE car SET curr_mileage = ? WHERE id = ?`;
+
+    db.run(sql, [newMileage, carID], function (err) {
+        if (err) {
+            console.error('Error updating mileage:', err);
+            callback(err);
+        } else {
+            console.log(`Mileage updated for car ID: ${carID}, New Mileage: ${newMileage}`);
+            callback(null, { updatedID: carID });
+        }
+    });
+}
 // SQL query to select all repairs
 export function getAllRepairs(db,serviceid,callback) {
     
@@ -122,6 +140,20 @@ export function deleteCar(db,carId, callback){
         }       
     });
 }
+
+// Function to delete a service
+export function deleteService(db,serviceId,callback){
+    const sql = 'DELETE FROM service WHERE id = ?'
+    db.run(sql,[serviceId], err =>{
+        if (err) {
+            console.error('Error deleting service:' , err.message);
+            callback(err);
+        } else {
+            console.log('Service deleted successfully');
+            callback(null);
+        }
+    });
+}
 export default{
     getAllCars,
     getAllServices,
@@ -130,4 +162,5 @@ export default{
     addNewService,
     deleteRepair,
     deleteCar,
+    deleteService,
 }

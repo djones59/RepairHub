@@ -1,17 +1,17 @@
 // src/App.js
 //components imports
 import HomePage from './components/homePage.js';
-
+import BlurFadeTransition from './components/BlurFadeTransition.js';
 import HomeButton from './components/homeButton.js';
 import ViewService from './components/ViewService.js';
 import AddCar from './components/AddCar.js'
 import AddService from './components/AddService.js'
+import Layout from './components/Layout.js'; 
 
 import React, {useState,useEffect } from 'react';
 import './App.css';
 import { HashRouter as Router, Route, Routes } from 'react-router-dom';
 
-import Grid from '@mui/material/Grid2/index.js';
 import Snackbar from '@mui/material/Snackbar/index.js'
 import Slide from '@mui/material/Slide/index.js';
 
@@ -44,6 +44,7 @@ function App() {
   }, []);
   return (
     <Router>
+      <Layout>
       <div className = "app" style={{ WebkitAppRegion: 'drag'}} >
         <HomeButton />
         <div className="window-controls" style={{ WebkitAppRegion: 'no-drag'}}>
@@ -58,19 +59,24 @@ function App() {
           </button>
         </div>
         <Routes>
-          <Route path="/" element={<HomePage />} />
+          <Route path="/" element={ 
+              <BlurFadeTransition>
+                <HomePage />
+              </BlurFadeTransition>
+            } />
           <Route path="/add-car"
             element={
-              <AddCar handleSnackbarOpen = {handleSnackbarOpen} cars = {cars} setCars = {setCars} fetchCars = {fetchCars}/>
+              
+                <AddCar handleSnackbarOpen = {handleSnackbarOpen} cars = {cars} setCars = {setCars} fetchCars = {fetchCars}/>
             }/>
           <Route path="*" element={<h1>Page Not Found</h1>} /> 
           <Route path= "/add-service" 
             element = {
-              <AddService cars = {cars} handleSnackbarOpen = {handleSnackbarOpen} />
+                <AddService cars = {cars} fetchCars = {fetchCars} handleSnackbarOpen = {handleSnackbarOpen} setSnackbarMessage  = {setSnackbarMessage} setOpen={setOpen}/>
             }/>
           <Route path= "/view-repairs" 
             element = {
-              <ViewService cars = {cars} />
+                <ViewService cars = {cars} handleSnackbarOpen = {handleSnackbarOpen} setSnackbarMessage = {setSnackbarMessage}/>
             }>
           </Route>
         </Routes>
@@ -83,6 +89,7 @@ function App() {
             anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
          />
       </div>
+      </Layout>
     </Router>
   );
 }

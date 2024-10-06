@@ -37,7 +37,7 @@ CREATE TABLE IF NOT EXISTS service (
     total_cost REAL NOT NULL,
     mileage INTEGER NOT NULL,
     location TEXT NOT NULL,
-    FOREIGN KEY (car_id) REFERENCES car(id)
+    FOREIGN KEY (car_id) REFERENCES car(id) ON DELETE CASCADE
 );
 `;
 
@@ -47,7 +47,7 @@ CREATE TABLE IF NOT EXISTS repair (
     servrepair_id INTEGER,
     description TEXT NOT NULL,
     cost REAL NOT NULL,
-    FOREIGN KEY (servrepair_id) REFERENCES servrepair(id)
+    FOREIGN KEY (servrepair_id) REFERENCES servrepair(id) ON DELETE CASCADE
 );
 `;
 export default db;

@@ -1,11 +1,13 @@
 import { useNavigate , useLocation } from 'react-router-dom';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 const HomeButton = () => {
   const [hover, setHover] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
 
-  const handleHomeClick = () => {
+  const handleHomeClick = (event) => {
+    event.target.blur(); // Removes focus from the button after clicking
+    setHover(false);  
     navigate('/');
   };
   if (location.pathname === '/') {

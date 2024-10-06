@@ -8,8 +8,9 @@ import {
   insertCar,
   getAllCars,
   addNewService,
-  deleteRepair,
+  deleteService,
   deleteCar, 
+  updateCarMileage,
 } from './database/queries.js';
 
 
@@ -35,11 +36,13 @@ function createWindow() {
   win.loadFile(join(__dirname, 'build/index.html'));
 
   // Open DevTools to check for errors
-  win.webContents.openDevTools();
+  //win.webContents.openDevTools();
 }
 
-app.whenReady().then(createWindow);
-
+app.whenReady().then(() => {
+  createWindow();
+  setupSchema(db);
+});
 // IPC HANDELERS -----
 // ipc handeler for window functions
 ipcMain.handle('toggle-maximize-window', (event) => {
@@ -95,8 +98,20 @@ ipcMain.handle('get-all-services', async (event) =>{
     });
   });
 });
+// ipc handler for updateCarMileage
+ipcMain.handle('update-car-mileage', async (event, carID, newMileage) => {
+  return new Promise((resolve, reject) => {
+    updateCarMileage(db, carID, newMileage, (err, result) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(result);
+      }
+    });
+  });
+});
 
-// ipc handler form getAllRepairs
+// ipc handler for getAllRepairs
 ipcMain.handle('get-all-repairs', async (event,serviceID) =>{
   return new Promise((resolve,reject)=>{
     getAllRepairs(db,serviceID ,(err,rows) => {
@@ -109,6 +124,19 @@ ipcMain.handle('get-all-repairs', async (event,serviceID) =>{
   });
 });
 
+//ipc handler for deleteService
+ipcMain.handle('delete-service', async (event,serviceID) =>{
+  return new Promise((resolve,reject)=>{
+    deleteService(db,serviceID, (err) =>{
+      if (err){
+        reject(err);
+      }else {
+        resolve(serviceID);
+      }
+    })
+  });
+});
+// ipc handler for deleteCar
 ipcMain.handle('delete-car', async (event,carID) => {
   return new Promise((resolve, reject) => {
     deleteCar(db,carID, (err) =>{
