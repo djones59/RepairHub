@@ -1,19 +1,40 @@
 //db.js, stores schema for sql datbase
 import sqlite3 from 'sqlite3';
 import path from 'path';
-import { fileURLToPath } from 'url';
+import { app } from 'electron';
+import fs from 'fs';
+// Set up database path
+// Variable to store the database path
+let dbPath;
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+if (process.env.NODE_ENV === 'development') {
+  // Development mode: Use the local path in your project
+  dbPath = path.resolve(__dirname, 'database.sqlite');
+} else {
+  // Production mode: Use the 'resources' directory provided by Electron
+  const userDataPath = app.getPath('userData'); // This is a path where you have write permissions.
+  const dbOriginalPath = path.join(process.resourcesPath, 'database', 'database.sqlite');
+  const dbDestinationPath = path.join(userDataPath, 'database.sqlite');
+
+  // Copy the database file from original path to user data path if it doesn't already exist
+  if (!fs.existsSync(dbDestinationPath)) {
+    try {
+      fs.copyFileSync(dbOriginalPath, dbDestinationPath);
+    } catch (err) {
+      console.error('Failed to copy database:', err);
+    }
+  }
+
+  dbPath = dbDestinationPath;
+}
 
 // Connect to SQLite database
-const dbPath = path.resolve(__dirname, 'database.sqlite');
-const db = new sqlite3.Database(dbPath,(err) => {
-    if (err) {
-        console.error('Error opening database', err.message);
-    }else{
-        console.log('Connected to SQLite database');
-    }
+const db = new sqlite3.Database(dbPath, (err) => {
+  if (err) {
+    console.error('Error opening database', err.message);
+  } else {
+    console.log('Connected to SQLite database at', dbPath);
+  }
 });
 
 
@@ -50,11 +71,12 @@ CREATE TABLE IF NOT EXISTS repair (
     FOREIGN KEY (servrepair_id) REFERENCES servrepair(id) ON DELETE CASCADE
 );
 `;
-export default db;
-export function setupSchema(db) {
+
+export function setupSchema() {
     db.serialize(() => {
         db.run(carTable);
         db.run(servrepairTable);
         db.run(repairTable);
     });
 }
+export default db;

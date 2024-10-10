@@ -1,18 +1,17 @@
-import { app, BrowserWindow , ipcMain} from 'electron';
+import { app, BrowserWindow, ipcMain } from 'electron';
 import { join } from 'path';
 import { fileURLToPath } from 'url';
-import db from './database/db.js';
-import { 
+import db, { setupSchema } from './database/db.js';
+import {
   getAllServices,
   getAllRepairs,
   insertCar,
   getAllCars,
   addNewService,
   deleteService,
-  deleteCar, 
+  deleteCar,
   updateCarMileage,
 } from './database/queries.js';
-
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = join(__filename, '../');
@@ -23,25 +22,28 @@ function createWindow() {
     height: 800,
     frame: false,
     webPreferences: {
-      preload: join(__dirname, 'src','preload.js'),
+      preload: join(__dirname, 'src', 'preload.js'),
       nodeIntegration: false,
       contextIsolation: true,
     },
   });
-  
-  // In development, load React app
-  //win.loadURL('http://localhost:3000');
-  
-  // Uncomment this for production build
-  win.loadFile(join(__dirname, 'build/index.html'));
 
-  // Open DevTools to check for errors
-  //win.webContents.openDevTools();
+  // Load different files based on environment
+  if (process.env.NODE_ENV === 'development') {
+    // Uncomment for development
+    // win.loadURL('http://localhost:3000');
+  } else {
+    win.loadFile(join(__dirname, 'build/index.html'));
+  }
+
+  if (process.env.NODE_ENV === 'development') {
+    win.webContents.openDevTools();
+  }
 }
 
 app.whenReady().then(() => {
   createWindow();
-  setupSchema(db);
+  setupSchema();
 });
 // IPC HANDELERS -----
 // ipc handeler for window functions
@@ -160,10 +162,6 @@ ipcMain.handle('add-service', async (event,serviceData) => {
     });
   });
 });
-
-
-
-
 //END IPC HANDELERS ------
 
 

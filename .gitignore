@@ -7,3 +7,5 @@ electron/
 # Ignore cache and log files
 .cache/
 *.log
+
+dist/

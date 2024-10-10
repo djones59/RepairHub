@@ -54,7 +54,7 @@ const AddCarForm = ({ fetchCars , handleSnackbarOpen}) => {
         });
     };
   return (
-    <div >
+    <div>
       <video autoPlay loop muted id="background-blurred-video">
         <source src={videoBackground} type="video/mp4" />
         Your browser does not support the video tag.

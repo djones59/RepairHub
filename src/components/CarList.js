@@ -125,7 +125,7 @@ const CarList = ({ cars, fetchCars }) => {
       <ConfirmDialog
         open={open}
         title="Delete Car"
-        message="Are you sure you want to delete this car?"
+        message="Are you sure you want to delete this car? This will delete every service associated with this car."
         onConfirm={() => handleDelete(selectedCarId)} // Use the stored car ID
         onCancel={handleCloseDialog}
       />
