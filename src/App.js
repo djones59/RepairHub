@@ -60,7 +60,7 @@ function App() {
         </div>
         <Routes>
           <Route path="/" element={ 
-              <BlurFadeTransition>
+              <BlurFadeTransition >
                 <HomePage />
               </BlurFadeTransition>
             } />
