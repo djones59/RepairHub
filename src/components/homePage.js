@@ -10,10 +10,11 @@ function HomePage() {
   return (
     <Grid container direction="column" justifyContent="center" alignItems="center"
       style={{
-        WebkitAppRegion: 'no-drag',
+        WebkitAppRegion: 'drag',
         position: 'relative',
         height: '100vh', // Full height of the view
-        maxHeight: '750px'
+        maxHeight: '750px',
+        minWidth: '1050px'
       }}
     >
       <video autoPlay loop muted
@@ -38,6 +39,7 @@ function HomePage() {
         justifyContent="center"
         alignItems="center"
         style={{
+          WebkitAppRegion: 'no-drag',
           maxWidth: '700px',
           maxHeight: '700px', // Ensures the grid takes the full height of the viewport
           marginBottom: '200px',
